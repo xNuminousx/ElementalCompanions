@@ -4,7 +4,7 @@ main: me.numin.elementalcompanions.ElementalCompanions
 api-version: 1.14
 softdepend: [ProjectKorra]
 authors: [Numin]
-description: Companions to follow you and empower your bending!
+description: Companions to follow you, empower bending, and defend you!
 
 commands:
   elementalcompanions:
