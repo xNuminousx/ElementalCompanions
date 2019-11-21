@@ -1,0 +1,15 @@
+name: ElementalCompanions
+version: 0.1
+main: me.numin.elementalcompanions.ElementalCompanions
+api-version: 1.14
+softdepend: [ProjectKorra]
+authors: [Numin]
+description: Companions to follow you and empower your bending!
+
+commands:
+  elementalcompanions:
+    usage: /<command>
+    description: Base for the command.
+  ec:
+    usage: /<command>
+    description: Base for the command.
