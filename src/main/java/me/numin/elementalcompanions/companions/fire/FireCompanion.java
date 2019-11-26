@@ -1,6 +1,7 @@
 package me.numin.elementalcompanions.companions.fire;
 
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.GeneralMethods;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.fire.CompanionFireBlast;
 import me.numin.elementalcompanions.companions.Companion;
@@ -8,6 +9,7 @@ import me.numin.elementalcompanions.utils.RandomChance;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 
 public class FireCompanion extends Companion {
@@ -50,7 +52,10 @@ public class FireCompanion extends Companion {
 
     @Override
     public void animateMovement() {
-        currentLocation = getMovement().moveNaturally();
+        currentLocation = getMovement().moveAimlessly();
+
+        playSound();
+
         currentLocation
                 .getWorld()
                 .spawnParticle(Particle.FLAME, currentLocation, 2, 0.2, 0.2, 0.2, 0.009);
@@ -61,13 +66,18 @@ public class FireCompanion extends Companion {
         if (isReactive())
             currentLocation
                     .getWorld()
-                    .spawnParticle(Particle.REDSTONE, currentLocation, 2, 0, 0, 0, 0, red);
+                    .spawnParticle(Particle.REDSTONE, currentLocation, 2, 0.1, 0.1, 0.1, 0, red);
     }
 
     @Override
     public void advanceReaction() {
         // Skeleton for the random chance to shoot an enemy
         if (CompanionAbility.activeAbilities.containsKey(this))
+            return;
+
+        //TODO: Remove when companions are no longer able to travel through blocks.
+        Block currentBlock = getLocation().getBlock();
+        if (currentBlock.isLiquid() || GeneralMethods.isSolid(currentBlock))
             return;
 
         boolean canReact = new RandomChance(1).chanceReached();

@@ -61,13 +61,16 @@ public class EarthCompanion extends Companion {
 
     @Override
     public void animateMovement() {
-        currentLocation = getMovement().moveNaturally();
+        currentLocation = getMovement().moveAimlessly();
+
+        playSound();
+
         currentLocation
                 .getWorld()
-                .spawnParticle(Particle.BLOCK_CRACK, currentLocation, 3, 0, 0, 0, 0, earthBlock);
+                .spawnParticle(Particle.BLOCK_CRACK, currentLocation, 1, 0, 0, 0, 0, earthBlock);
         currentLocation
                 .getWorld()
-                .spawnParticle(Particle.REDSTONE, currentLocation, 2, 0, 0, 0, 0, blockColor);
+                .spawnParticle(Particle.REDSTONE, currentLocation, 2, 0.1, 0.1, 0.1, 0, blockColor);
     }
 
     @Override

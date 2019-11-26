@@ -1,11 +1,12 @@
 package me.numin.elementalcompanions.utils;
 
+import com.projectkorra.projectkorra.GeneralMethods;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-public class NaturalMovement {
+public class Movement {
 
     private Location currentLocation;
     private Location destination;
@@ -17,12 +18,12 @@ public class NaturalMovement {
     private long currentTime;
     private long refreshRate;
 
-    public NaturalMovement(Location origin, Player source) {
+    public Movement(Location origin, Player source) {
         this.source = source;
 
         this.currentLocation = origin.clone();
         this.currentTime = System.currentTimeMillis();
-        this.destination = generateDestination(origin);
+        this.destination = generateDestination(currentLocation);
         this.direction = new Vector(1, 0, 0);
 
         this.refreshRate = 5000;
@@ -30,7 +31,7 @@ public class NaturalMovement {
         this.speed = 0.1;
     }
 
-    public Location moveNaturally() {
+    public Location moveAimlessly() {
         World currentWorld = currentLocation.getWorld();
         World sourceWorld = source.getWorld();
 
@@ -78,8 +79,6 @@ public class NaturalMovement {
     }
 
     private Location generateDestination(Location base) {
-        return base
-                .clone()
-                .add(TrueRandom.getTrueRandom() * 1.3, TrueRandom.getTrueRandom() * 1.5, TrueRandom.getTrueRandom() * 1.3);
+        return base.clone().add(TrueRandom.getTrueRandom() * 1.3, TrueRandom.getTrueRandom() * 1.5, TrueRandom.getTrueRandom() * 1.3);
     }
 }

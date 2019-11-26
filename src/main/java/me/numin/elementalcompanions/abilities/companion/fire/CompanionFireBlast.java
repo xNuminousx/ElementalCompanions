@@ -7,6 +7,7 @@ import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.RandomChance;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -31,6 +32,8 @@ public class CompanionFireBlast extends CompanionAbility {
         this.direction = new Vector(1, 0, 0);
         this.damage = 2;
         this.speed = 0.5;
+
+        currentLocation.getWorld().playSound(currentLocation, Sound.ENTITY_GHAST_SHOOT, 0.1F, 0.5F);
     }
 
     @Override
@@ -55,7 +58,7 @@ public class CompanionFireBlast extends CompanionAbility {
             currentLocation.add(direction.clone().multiply(speed));
             currentLocation.getWorld().spawnParticle(Particle.FLAME, currentLocation, 2, 0.1, 0.1, 0.1, 0.009);
 
-            if (new RandomChance(20).chanceReached())
+            if (new RandomChance(10).chanceReached())
                 FireAbility.playFirebendingSound(currentLocation);
 
             if (currentLocation.distance(targetOrigin) < 0.1 ||

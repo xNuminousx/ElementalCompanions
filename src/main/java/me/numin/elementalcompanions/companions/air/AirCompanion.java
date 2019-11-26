@@ -6,8 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 
-import java.util.Random;
-
 public class AirCompanion extends Companion {
 
     private Location currentLocation;
@@ -40,15 +38,20 @@ public class AirCompanion extends Companion {
 
     @Override
     public void animateMovement() {
-        currentLocation = getMovement().moveNaturally();
-        currentLocation.getWorld().spawnParticle(Particle.CLOUD, currentLocation, 1, 0, 0, 0, 0);
+        currentLocation = getMovement().moveAimlessly();
+
+        playSound();
+
+        currentLocation
+                .getWorld()
+                .spawnParticle(Particle.CLOUD, currentLocation, 1, 0, 0, 0, 0);
+
+        currentLocation
+                .getWorld()
+                .spawnParticle(Particle.SPELL_INSTANT, currentLocation,1, 0.1, 0.1, 0.1, 0);
     }
 
     @Override
     public void advanceReaction() {
-        int random = new Random().nextInt(100);
-        if (random < 10) {
-            getLocation().getWorld().spawnParticle(Particle.CRIT_MAGIC, getLocation(), 5, 0.1, 0.1, 0.1, 0);
-        }
     }
 }
