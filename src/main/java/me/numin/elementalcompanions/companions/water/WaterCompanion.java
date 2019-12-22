@@ -1,23 +1,43 @@
 package me.numin.elementalcompanions.companions.water;
 
 import com.projectkorra.projectkorra.Element;
+import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
+import me.numin.elementalcompanions.abilities.companion.water.CompanionHeal;
+import me.numin.elementalcompanions.abilities.companion.water.CompanionWaterBlast;
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.RandomChance;
+import me.numin.elementalcompanions.utils.SoundHandler;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import java.util.Random;
 
 public class WaterCompanion extends Companion {
 
     private Particle.DustOptions blue;
     private Location currentLocation;
+    private SoundHandler elementalSounds, genericSounds;
+
+    private double criticalHealth;
+    private long currentTime;
+    private long lastHealTime;
+    private long reactBuffer;
 
     public WaterCompanion(Player player) {
         super(player);
 
         this.currentLocation = getSpawn();
         this.blue = new Particle.DustOptions(Color.fromRGB(50, 120, 255), 1);
+
+        this.criticalHealth = 10;
+        this.currentTime = System.currentTimeMillis();
+        this.lastHealTime = System.currentTimeMillis();
+        this.reactBuffer = 3000;
+        this.elementalSounds = new SoundHandler(1000, 10);
+        this.genericSounds = new SoundHandler(6000, 1);
     }
 
     @Override
@@ -36,15 +56,13 @@ public class WaterCompanion extends Companion {
     }
 
     @Override
-    public boolean isReactive() {
-        return super.isReactive();
-    }
-
-    @Override
     public void animateMovement() {
         currentLocation = getMovement().moveAimlessly();
 
-        playSound();
+        if (!isSilenced()) {
+            genericSounds.playAmbientCompanionSound(this);
+            elementalSounds.playAmbientElementalCompanionSound(this);
+        }
 
         currentLocation
                 .getWorld()
@@ -62,5 +80,29 @@ public class WaterCompanion extends Companion {
 
     @Override
     public void advanceReaction() {
+        if (CompanionAbility.activeAbilities.containsKey(this))
+            return;
+
+        if (System.currentTimeMillis() > currentTime + reactBuffer) {
+            int r = new Random().nextInt(2);
+            if (r == 1) {
+                boolean canReact = new RandomChance(1).chanceReached();
+                LivingEntity randomEntity = getRandomEntity(getLocation(), 20);
+
+                if (canReact && randomEntity != null) {
+                    new CompanionWaterBlast(this, randomEntity);
+                    currentTime = System.currentTimeMillis();
+                }
+            } else {
+                boolean canReact = new RandomChance(10).chanceReached();
+                        //&& getPlayer().getHealth() < criticalHealth;
+
+                if (canReact && System.currentTimeMillis() - lastHealTime > 3000) {
+                    lastHealTime = System.currentTimeMillis();
+                    new CompanionHeal(this, getPlayer());
+                    currentTime = System.currentTimeMillis();
+                }
+            }
+        }
     }
 }

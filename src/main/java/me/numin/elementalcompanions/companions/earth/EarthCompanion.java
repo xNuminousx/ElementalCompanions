@@ -7,6 +7,7 @@ import me.numin.elementalcompanions.abilities.companion.earth.CompanionEarthPill
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.EarthMaterial;
 import me.numin.elementalcompanions.utils.RandomChance;
+import me.numin.elementalcompanions.utils.SoundHandler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -22,6 +23,7 @@ public class EarthCompanion extends Companion {
     private BlockData earthBlock;
     private Particle.DustOptions blockColor;
     private Location currentLocation;
+    private SoundHandler elementalSounds, genericSounds;
 
     private long currentTime;
     private long reactBuffer;
@@ -37,6 +39,8 @@ public class EarthCompanion extends Companion {
         this.currentLocation = getSpawn();
         this.currentTime = System.currentTimeMillis();
         this.reactBuffer = 3000;
+        this.elementalSounds = new SoundHandler(1000, 10);
+        this.genericSounds = new SoundHandler(6000, 1);
     }
 
     @Override
@@ -55,15 +59,13 @@ public class EarthCompanion extends Companion {
     }
 
     @Override
-    public boolean isReactive() {
-        return super.isReactive();
-    }
-
-    @Override
     public void animateMovement() {
         currentLocation = getMovement().moveAimlessly();
 
-        playSound();
+        if (!isSilenced()) {
+            genericSounds.playAmbientCompanionSound(this);
+            elementalSounds.playAmbientElementalCompanionSound(this);
+        }
 
         currentLocation
                 .getWorld()

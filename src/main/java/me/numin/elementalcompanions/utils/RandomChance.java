@@ -5,6 +5,7 @@ import java.util.Random;
 public class RandomChance {
 
     private double percent;
+    private int randomInt;
 
     /**
      * Used for allowing more randomization.
@@ -14,10 +15,10 @@ public class RandomChance {
      */
     public RandomChance(double percent) {
         this.percent = percent * 10;
+        this.randomInt = new Random().nextInt(1000);
     }
 
     public boolean chanceReached() {
-        int randomInt = new Random().nextInt(1000);
         return randomInt <= percent;
     }
 

@@ -7,8 +7,8 @@ public interface Companionable {
     Element getElement();
     Location getLocation();
     String getName();
-    //TODO: Implement reactive features
     boolean isReactive();
+    boolean isSilenced();
     void animateMovement();
     void advanceReaction();
 }

@@ -33,7 +33,7 @@ public class CompanionManager implements Runnable {
                 e.printStackTrace();
             }
 
-            if (companion.isReactive() && companion.canBeReactive()) {
+            if (companion.isReactive()) {
                 try {
                     companion.advanceReaction();
                 } catch(Exception e) {

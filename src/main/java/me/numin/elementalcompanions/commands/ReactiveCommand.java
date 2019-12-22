@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 class ReactiveCommand {
 
     ReactiveCommand(Player player, String input) {
-
         if (!Companion.companions.containsKey(player))
             return;
 
@@ -15,12 +14,22 @@ class ReactiveCommand {
         if (companion == null)
             return;
 
+        if (input == null) {
+            boolean isReactive = companion.isReactive();
+            if (isReactive) changeReactiveState(companion, false);
+            else changeReactiveState(companion, true);
+            return;
+        }
+
         if (input.equalsIgnoreCase("true")) {
-            companion.setReactive(true);
-            player.sendMessage("Your companion is now reactive");
+            changeReactiveState(companion, true);
         } else if (input.equalsIgnoreCase("false")) {
-            companion.setReactive(false);
-            player.sendMessage("Your companion is no longer reactive.");
+            changeReactiveState(companion, false);
         } else player.sendMessage("Not a valid input");
+    }
+
+    private void changeReactiveState(Companion companion, boolean state) {
+        companion.setReactive(state);
+        companion.getPlayer().sendMessage("Your companion's reactive state is now [" + state + "]");
     }
 }

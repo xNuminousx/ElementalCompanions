@@ -32,8 +32,16 @@ public class CommandRegistry implements CommandExecutor {
                     new RemoveCommand(player);
                     return true;
                 } else if (args[0].equalsIgnoreCase("reactive")) {
-                    new ReactiveCommand(player, args[1]);
+                    if (args.length == 1)
+                        new ReactiveCommand(player, null);
+                    else
+                        new ReactiveCommand(player, args[1]);
                     return true;
+                } else if (args[0].equalsIgnoreCase("silence")) {
+                    if (args.length == 1)
+                        new SilenceCommand(player, null);
+                    else
+                        new SilenceCommand(player, args[1]);
                 }
             }
         }

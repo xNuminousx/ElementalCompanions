@@ -3,6 +3,10 @@ package me.numin.elementalcompanions.utils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
+/**
+ * An enumeration used to determine the type and color of earth particles
+ * when used.
+ */
 public enum EarthMaterial {
 
     DIRT(Material.DIRT, Color.fromRGB(89, 49, 0)),
@@ -13,6 +17,12 @@ public enum EarthMaterial {
     private Color color;
     private Material material;
 
+    /**
+     * Creates the EarthMaterial
+     *
+     * @param material The block to be based off of. Often used to display block crack particles.
+     * @param color The color of the block in Color format to be used with colored redstone particles.
+     */
     EarthMaterial(Material material, Color color) {
         this.color = color;
         this.material = material;

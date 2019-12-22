@@ -2,6 +2,7 @@ package me.numin.elementalcompanions.companions.air;
 
 import com.projectkorra.projectkorra.Element;
 import me.numin.elementalcompanions.companions.Companion;
+import me.numin.elementalcompanions.utils.SoundHandler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -9,11 +10,14 @@ import org.bukkit.entity.Player;
 public class AirCompanion extends Companion {
 
     private Location currentLocation;
+    private SoundHandler elementalSounds, genericSounds;
 
     public AirCompanion(Player player) {
         super(player);
 
         this.currentLocation = getSpawn();
+        this.elementalSounds = new SoundHandler(1000, 10);
+        this.genericSounds = new SoundHandler(6000, 1);
     }
 
     @Override
@@ -32,15 +36,13 @@ public class AirCompanion extends Companion {
     }
 
     @Override
-    public boolean isReactive() {
-        return super.isReactive();
-    }
-
-    @Override
     public void animateMovement() {
         currentLocation = getMovement().moveAimlessly();
 
-        playSound();
+        if (!isSilenced()) {
+            genericSounds.playAmbientCompanionSound(this);
+            elementalSounds.playAmbientElementalCompanionSound(this);
+        }
 
         currentLocation
                 .getWorld()

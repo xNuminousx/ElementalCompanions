@@ -1,21 +1,21 @@
 package me.numin.elementalcompanions.companions.fire;
 
 import com.projectkorra.projectkorra.Element;
-import com.projectkorra.projectkorra.GeneralMethods;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.fire.CompanionFireBlast;
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.RandomChance;
+import me.numin.elementalcompanions.utils.SoundHandler;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 
 public class FireCompanion extends Companion {
 
     private Particle.DustOptions red;
     private Location currentLocation;
+    private SoundHandler elementalSounds, genericSounds;
 
     private long currentTime;
     private long reactBuffer;
@@ -26,6 +26,8 @@ public class FireCompanion extends Companion {
         this.currentTime = System.currentTimeMillis();
         this.reactBuffer = 3000;
         this.red = new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1);
+        this.elementalSounds = new SoundHandler(1000, 10);
+        this.genericSounds = new SoundHandler(6000, 1);
     }
 
     @Override
@@ -44,17 +46,13 @@ public class FireCompanion extends Companion {
     }
 
     @Override
-    public boolean isReactive() {
-        //TODO: Implement configurable hostile mode (can be turned on or off through configuration)
-        //TODO: Maybe hostility can be environmental too?
-        return super.isReactive();
-    }
-
-    @Override
     public void animateMovement() {
         currentLocation = getMovement().moveAimlessly();
 
-        playSound();
+        if (!isSilenced()) {
+            genericSounds.playAmbientCompanionSound(this);
+            elementalSounds.playAmbientElementalCompanionSound(this);
+        }
 
         currentLocation
                 .getWorld()
@@ -71,13 +69,7 @@ public class FireCompanion extends Companion {
 
     @Override
     public void advanceReaction() {
-        // Skeleton for the random chance to shoot an enemy
         if (CompanionAbility.activeAbilities.containsKey(this))
-            return;
-
-        //TODO: Remove when companions are no longer able to travel through blocks.
-        Block currentBlock = getLocation().getBlock();
-        if (currentBlock.isLiquid() || GeneralMethods.isSolid(currentBlock))
             return;
 
         boolean canReact = new RandomChance(1).chanceReached();

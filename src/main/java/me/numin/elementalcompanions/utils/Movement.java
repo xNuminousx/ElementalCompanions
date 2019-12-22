@@ -2,83 +2,98 @@ package me.numin.elementalcompanions.utils;
 
 import com.projectkorra.projectkorra.GeneralMethods;
 import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Movement {
 
     private Location currentLocation;
     private Location destination;
-    private Player source;
+    private Player anchor;
     private Vector direction;
 
-    private double range;
     private double speed;
-    private long currentTime;
-    private long refreshRate;
+    private long newGoalTime;
+    private long stopTime;
+    private long newGoalBuffer;
+    private long movementBuffer;
+    private long time;
 
-    public Movement(Location origin, Player source) {
-        this.source = source;
-
-        this.currentLocation = origin.clone();
-        this.currentTime = System.currentTimeMillis();
-        this.destination = generateDestination(currentLocation);
+    /**
+     * A class used to manipulate a Location variable in different ways.
+     *
+     * @param anchor The player entity which the movement revolves around.
+     * @param spawn The initial spawn location used for first calculations.
+     */
+    public Movement(Player anchor, Location spawn) {
+        this.anchor = anchor;
+        this.currentLocation = spawn.clone();
+        this.destination = generateRandomPoint(anchor.getEyeLocation());
         this.direction = new Vector(1, 0, 0);
-
-        this.refreshRate = 5000;
-        this.range = 3;
+        this.newGoalBuffer = 1500;
+        this.movementBuffer = 500;
         this.speed = 0.1;
+        this.time = System.currentTimeMillis();
+        this.newGoalTime = time;
+        this.stopTime = time;
     }
 
     public Location moveAimlessly() {
-        World currentWorld = currentLocation.getWorld();
-        World sourceWorld = source.getWorld();
+        double anchorDistance = currentLocation.distance(anchor.getEyeLocation());
 
-        double targetDistance = currentLocation.distance(destination);
+        if (anchorDistance > 20)
+            currentLocation = anchor.getEyeLocation().clone();
+        else if (anchorDistance > 4)
+            speed = Math.max(0.1, anchorDistance * 0.05);
+        else speed = 0.1;
 
-        if (targetDistance > 1 || refreshDestination() || tooLow(currentLocation))
-            destination = generateDestination(currentLocation);
-        if (outOfReach()) {
-            destination = generateDestination(source.getEyeLocation());
-            speed = 0.4;
-        } else speed = 0.1;
-
-        assert currentWorld != null;
-        if (extremelyOutOfReach() || !currentWorld.equals(sourceWorld)) {
-            currentLocation = source.getLocation().clone();
-            destination = generateDestination(source.getEyeLocation());
+        if (System.currentTimeMillis() > newGoalTime + newGoalBuffer) {
+            destination = generateRandomPoint(anchor.getEyeLocation());
+            newGoalTime = System.currentTimeMillis();
         }
+        double targetDistance = currentLocation.distance(destination);
 
         direction.add(destination.toVector().subtract(currentLocation.toVector()).multiply(speed)).normalize();
 
-        if (currentLocation.distance(destination) > 0.1)
+        if (targetDistance > 0.15)
             currentLocation.add(direction.clone().multiply(speed));
 
         return currentLocation;
     }
 
-    private boolean outOfReach() {
-        return source.getLocation().distance(currentLocation) > range + 2;
-    }
-
-    private boolean extremelyOutOfReach() {
-        return source.getLocation().distance(currentLocation) > range + 20;
-    }
-
-    private boolean refreshDestination() {
-        if (System.currentTimeMillis() > currentTime + refreshRate) {
-            currentTime = System.currentTimeMillis();
-            return true;
+    public boolean shouldFreeze() {
+        if (System.currentTimeMillis() > time + 1000) {
+            if (System.currentTimeMillis() - time > 2000)
+                time = System.currentTimeMillis();
+            return new RandomChance(30).chanceReached();
         }
         return false;
     }
 
-    private boolean tooLow(Location location) {
-        return location.getY() < source.getLocation().getY();
-    }
+    public Location generateRandomPoint(Location base) {
+        Location newPoint = base.clone().add(TrueRandom.getTrueRandom() * 1.3, TrueRandom.getTrueRandom() * 1.3, TrueRandom.getTrueRandom() * 1.3);
 
-    private Location generateDestination(Location base) {
-        return base.clone().add(TrueRandom.getTrueRandom() * 1.3, TrueRandom.getTrueRandom() * 1.5, TrueRandom.getTrueRandom() * 1.3);
+        if (!newPoint.getBlock().getType().equals(Material.AIR)) {
+            List<Block> alternatePoints = new ArrayList<>();
+
+            for (Block block : GeneralMethods.getBlocksAroundPoint(newPoint, 3)) {
+                if (block.getType().equals(Material.AIR))
+                    alternatePoints.add(block);
+            }
+
+            if (alternatePoints.size() < 1)
+                newPoint = anchor.getEyeLocation().clone().add(TrueRandom.getTrueRandom() * 1.3, 1.5, TrueRandom.getTrueRandom() * 1.3);
+            else {
+                newPoint = alternatePoints.get(new Random().nextInt(alternatePoints.size())).getLocation();
+            }
+        }
+
+        return newPoint;
     }
 }

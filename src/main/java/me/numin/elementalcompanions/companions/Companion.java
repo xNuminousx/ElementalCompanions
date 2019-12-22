@@ -1,13 +1,10 @@
 package me.numin.elementalcompanions.companions;
 
-import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.GeneralMethods;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.utils.Movement;
-import me.numin.elementalcompanions.utils.RandomChance;
 import me.numin.elementalcompanions.utils.TrueRandom;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -27,28 +24,29 @@ public abstract class Companion implements Companionable {
     private Player player;
 
     private boolean isReactive;
+    private boolean isSilenced;
 
     public Companion(Player player) {
         this.player = player;
 
         this.spawn = locationRelativeToPlayer();
-        this.movement = new Movement(spawn, player);
+        this.movement = new Movement(player, spawn);
 
-        // Companions are not reactive by default, must be enabled manually.
         this.isReactive = false;
+        this.isSilenced = false;
 
         companions.put(player, this);
     }
 
-    boolean canBeReactive() {
+    public boolean canBeReactive() {
         return GeneralMethods.getEntitiesAroundPoint(getPlayer().getLocation(), 20).size() >= 1;
     }
 
-    static HashMap<Player, Companion> getCompanions() {
+    public static HashMap<Player, Companion> getCompanions() {
         return companions;
     }
 
-    protected Movement getMovement() {
+    public Movement getMovement() {
         return movement;
     }
 
@@ -56,11 +54,11 @@ public abstract class Companion implements Companionable {
         return player;
     }
 
-    protected Location getSpawn() {
+    public Location getSpawn() {
         return spawn;
     }
 
-    boolean hasPermission(Player player) {
+    public boolean hasPermission(Player player) {
         return player.hasPermission("elementalcompanions." +
                 this.getElement().getName().toLowerCase() + "." +
                 this.getName().toLowerCase());
@@ -71,7 +69,12 @@ public abstract class Companion implements Companionable {
         return isReactive && canBeReactive();
     }
 
-    protected LivingEntity getRandomEntity(Location location, double radius) {
+    @Override
+    public boolean isSilenced() {
+        return isSilenced;
+    }
+
+    public LivingEntity getRandomEntity(Location location, double radius) {
         List<LivingEntity> validEntities = new ArrayList<>();
         for (Entity entity : GeneralMethods.getEntitiesAroundPoint(location, radius)) {
             if (entity instanceof LivingEntity &&
@@ -88,28 +91,10 @@ public abstract class Companion implements Companionable {
             return validEntities.get(new Random().nextInt(validEntities.size()));
     }
 
-    private Location locationRelativeToPlayer() {
+    public Location locationRelativeToPlayer() {
         return player
                 .getEyeLocation()
                 .add(TrueRandom.getTrueRandom(), TrueRandom.getTrueRandom(), TrueRandom.getTrueRandom());
-    }
-
-    protected void playSound() {
-        Element element = getElement();
-
-        // elemental sounds
-        if (new RandomChance(10).chanceReached()) {
-            if (element == Element.FIRE)
-                getLocation().getWorld().playSound(getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.2F, 1F);
-            else if (element == Element.WATER)
-                getLocation().getWorld().playSound(getLocation(), Sound.BLOCK_WATER_AMBIENT, 0.1F, 1.2F);
-            else if (element == Element.EARTH)
-                getLocation().getWorld().playSound(getLocation(), Sound.BLOCK_STONE_HIT, 0.1F, 0.2F);
-        }
-
-        // generic sound
-        if (new RandomChance(1).chanceReached())
-            getLocation().getWorld().playSound(getLocation(), Sound.ENTITY_GHAST_AMBIENT, 0.3F, 2F);
     }
 
     public void removeCompanion() {
@@ -124,5 +109,9 @@ public abstract class Companion implements Companionable {
 
     public void setReactive(boolean bool) {
         isReactive = bool;
+    }
+
+    public void setSilent(boolean bool) {
+        isSilenced = bool;
     }
 }
