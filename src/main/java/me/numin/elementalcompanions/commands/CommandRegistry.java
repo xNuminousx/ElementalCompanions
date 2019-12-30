@@ -9,15 +9,13 @@ import java.util.Arrays;
 
 public class CommandRegistry implements CommandExecutor {
 
-    private static String[] aliases = {"elementalcompanions", "ec"};
+    private String[] aliases = {"elementalcompanions", "ec"};
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (Arrays.asList(aliases).contains(label.toLowerCase())) {
-
             if (args.length == 0)
                 new HelpCommand(sender);
-
             else {
                 if (!(sender instanceof Player)) {
                     sender.sendMessage("You must be a player.");
@@ -42,6 +40,7 @@ public class CommandRegistry implements CommandExecutor {
                         new SilenceCommand(player, null);
                     else
                         new SilenceCommand(player, args[1]);
+                    return true;
                 }
             }
         }

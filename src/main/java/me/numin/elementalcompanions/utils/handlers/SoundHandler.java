@@ -1,38 +1,34 @@
-package me.numin.elementalcompanions.utils;
+package me.numin.elementalcompanions.utils.handlers;
 
 import com.projectkorra.projectkorra.Element;
 import me.numin.elementalcompanions.companions.Companion;
+import me.numin.elementalcompanions.utils.randomizers.RandomChance;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
 
 public class SoundHandler {
 
+    private Companion companion;
+
     private boolean isPlayingSound;
-    private double percentChance;
-    private long increment;
     private long timeHolder;
 
     /**
      * Used to localize sounds. Allows for specific, stylized sounds to play randomly after every interval.
      * Also restricts the amount of sounds playing per instance at any one time to 1 so there's no overlap.
-     *
-     * @param increment The amount of time required in between each sound execution.
-     * @param percentChance The chance a sound has to play after a full increment has passed.
      */
-    public SoundHandler(long increment, double percentChance) {
-        this.increment = increment;
-        this.percentChance = percentChance;
+    public SoundHandler(Companion companion) {
+        this.companion = companion;
         this.timeHolder = System.currentTimeMillis();
         this.isPlayingSound = false;
     }
 
-    public boolean canPlaySound() {
+    private boolean canPlay(long increment, double percentChance) {
         return (System.currentTimeMillis() - timeHolder > increment) &&
                 new RandomChance(percentChance).chanceReached() &&
                 !isPlayingSound;
     }
 
-    public void playAmbientElementalCompanionSound(Companion companion) {
+    public void playAmbientElementalCompanionSound(long increment, double percentChance) {
         Element element = companion.getElement();
         CompanionSounds sound;
 
@@ -42,15 +38,15 @@ public class SoundHandler {
         else if (element.equals(Element.WATER)) sound = CompanionSounds.WATER;
         else return;
 
-        if (canPlaySound()) {
+        if (canPlay(increment, percentChance)) {
             companion.getLocation().getWorld().playSound(companion.getLocation(), sound.getSound(), sound.getVolume(), sound.getPitch());
             this.isPlayingSound = true;
             this.timeHolder = System.currentTimeMillis();
         } else isPlayingSound = false;
     }
 
-    public void playAmbientCompanionSound(Companion companion) {
-        if (canPlaySound()) {
+    public void playAmbientCompanionSound(long increment, double percentChance) {
+        if (canPlay(increment, percentChance)) {
             companion.getLocation().getWorld().playSound(companion.getLocation(), Sound.ENTITY_GHAST_AMBIENT, 0.1F, 2F);
             this.isPlayingSound = true;
             this.timeHolder = System.currentTimeMillis();

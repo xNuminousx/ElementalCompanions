@@ -1,4 +1,4 @@
-package me.numin.elementalcompanions.utils;
+package me.numin.elementalcompanions.utils.enumerations;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -18,10 +18,10 @@ public enum EarthMaterial {
     private Material material;
 
     /**
-     * Creates the EarthMaterial
+     * Creates the EarthMaterial.
      *
-     * @param material The block to be based off of. Often used to display block crack particles.
-     * @param color The color of the block in Color format to be used with colored redstone particles.
+     * @param material The block to be based off of. Used when displaying block crack particles.
+     * @param color The color of the block in {@link Color} format to be used with colored redstone particles.
      */
     EarthMaterial(Material material, Color color) {
         this.color = color;

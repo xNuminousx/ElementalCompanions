@@ -2,7 +2,8 @@ package me.numin.elementalcompanions.companions;
 
 import com.projectkorra.projectkorra.BendingPlayer;
 import me.numin.elementalcompanions.ElementalCompanions;
-import me.numin.elementalcompanions.utils.LogType;
+import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
+import me.numin.elementalcompanions.utils.enumerations.LogType;
 import org.bukkit.entity.Player;
 
 public class CompanionManager implements Runnable {
@@ -33,7 +34,7 @@ public class CompanionManager implements Runnable {
                 e.printStackTrace();
             }
 
-            if (companion.isReactive()) {
+            if (companion.isReactive() && !CompanionAbility.activeAbilities.containsKey(companion)) {
                 try {
                     companion.advanceReaction();
                 } catch(Exception e) {
@@ -44,7 +45,6 @@ public class CompanionManager implements Runnable {
         }
     }
 
-    // Might want to remove the BendingPlayer check, undecided
     private boolean isValidPlayer(Player player) {
         return player.isOnline() || BendingPlayer.getBendingPlayer(player) == null;
     }

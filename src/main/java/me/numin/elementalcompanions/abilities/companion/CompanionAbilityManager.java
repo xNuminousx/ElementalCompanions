@@ -5,6 +5,7 @@ public class CompanionAbilityManager implements Runnable {
     public void run() {
         for (CompanionAbility ability : CompanionAbility.activeAbilities.values()) {
             if (ability.getTarget().isDead() ||
+                    !ability.getCompanion().isReactive() ||
                     !ability.getTarget().getWorld().equals(ability.getCompanion().getLocation().getWorld()))
                 ability.removeAbility();
 

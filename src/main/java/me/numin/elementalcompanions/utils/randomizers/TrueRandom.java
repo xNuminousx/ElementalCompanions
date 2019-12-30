@@ -1,4 +1,4 @@
-package me.numin.elementalcompanions.utils;
+package me.numin.elementalcompanions.utils.randomizers;
 
 import java.util.Random;
 

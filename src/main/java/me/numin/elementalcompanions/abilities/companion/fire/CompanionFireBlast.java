@@ -4,7 +4,7 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.FireAbility;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.companions.Companion;
-import me.numin.elementalcompanions.utils.RandomChance;
+import me.numin.elementalcompanions.utils.randomizers.RandomChance;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;

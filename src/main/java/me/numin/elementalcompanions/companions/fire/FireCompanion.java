@@ -4,8 +4,8 @@ import com.projectkorra.projectkorra.Element;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.fire.CompanionFireBlast;
 import me.numin.elementalcompanions.companions.Companion;
-import me.numin.elementalcompanions.utils.RandomChance;
-import me.numin.elementalcompanions.utils.SoundHandler;
+import me.numin.elementalcompanions.utils.randomizers.RandomChance;
+import me.numin.elementalcompanions.utils.handlers.SoundHandler;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -15,7 +15,7 @@ public class FireCompanion extends Companion {
 
     private Particle.DustOptions red;
     private Location currentLocation;
-    private SoundHandler elementalSounds, genericSounds;
+    private SoundHandler soundHandler;
 
     private long currentTime;
     private long reactBuffer;
@@ -26,8 +26,7 @@ public class FireCompanion extends Companion {
         this.currentTime = System.currentTimeMillis();
         this.reactBuffer = 3000;
         this.red = new Particle.DustOptions(Color.fromRGB(255, 0, 0), 1);
-        this.elementalSounds = new SoundHandler(1000, 10);
-        this.genericSounds = new SoundHandler(6000, 1);
+        this.soundHandler = new SoundHandler(this);
     }
 
     @Override
@@ -47,16 +46,16 @@ public class FireCompanion extends Companion {
 
     @Override
     public void animateMovement() {
-        currentLocation = getMovement().moveAimlessly();
+        currentLocation = getMovementHandler().moveAimlessly();
 
         if (!isSilenced()) {
-            genericSounds.playAmbientCompanionSound(this);
-            elementalSounds.playAmbientElementalCompanionSound(this);
+            soundHandler.playAmbientCompanionSound(6000, 10);
+            soundHandler.playAmbientElementalCompanionSound(1000, 10);
         }
 
         currentLocation
                 .getWorld()
-                .spawnParticle(Particle.FLAME, currentLocation, 2, 0.2, 0.2, 0.2, 0.009);
+                .spawnParticle(Particle.FLAME, currentLocation, 3, 0.15, 0.15, 0.15, 0.009);
         currentLocation
                 .getWorld()
                 .spawnParticle(Particle.SMOKE_NORMAL, currentLocation, 1, 0.1, 0.1, 0.1, 0);
@@ -69,9 +68,6 @@ public class FireCompanion extends Companion {
 
     @Override
     public void advanceReaction() {
-        if (CompanionAbility.activeAbilities.containsKey(this))
-            return;
-
         boolean canReact = new RandomChance(1).chanceReached();
         LivingEntity randomEntity = getRandomEntity(getLocation(), 20);
 

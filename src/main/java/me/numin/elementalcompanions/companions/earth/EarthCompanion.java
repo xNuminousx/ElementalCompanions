@@ -5,9 +5,9 @@ import com.projectkorra.projectkorra.ability.EarthAbility;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.earth.CompanionEarthPillar;
 import me.numin.elementalcompanions.companions.Companion;
-import me.numin.elementalcompanions.utils.EarthMaterial;
-import me.numin.elementalcompanions.utils.RandomChance;
-import me.numin.elementalcompanions.utils.SoundHandler;
+import me.numin.elementalcompanions.utils.enumerations.EarthMaterial;
+import me.numin.elementalcompanions.utils.randomizers.RandomChance;
+import me.numin.elementalcompanions.utils.handlers.SoundHandler;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
@@ -23,7 +23,7 @@ public class EarthCompanion extends Companion {
     private BlockData earthBlock;
     private Particle.DustOptions blockColor;
     private Location currentLocation;
-    private SoundHandler elementalSounds, genericSounds;
+    private SoundHandler soundHandler;
 
     private long currentTime;
     private long reactBuffer;
@@ -39,8 +39,7 @@ public class EarthCompanion extends Companion {
         this.currentLocation = getSpawn();
         this.currentTime = System.currentTimeMillis();
         this.reactBuffer = 3000;
-        this.elementalSounds = new SoundHandler(1000, 10);
-        this.genericSounds = new SoundHandler(6000, 1);
+        this.soundHandler = new SoundHandler(this);
     }
 
     @Override
@@ -60,11 +59,11 @@ public class EarthCompanion extends Companion {
 
     @Override
     public void animateMovement() {
-        currentLocation = getMovement().moveAimlessly();
+        currentLocation = getMovementHandler().moveAimlessly();
 
         if (!isSilenced()) {
-            genericSounds.playAmbientCompanionSound(this);
-            elementalSounds.playAmbientElementalCompanionSound(this);
+            soundHandler.playAmbientCompanionSound(6000, 1);
+            soundHandler.playAmbientElementalCompanionSound(1000, 10);
         }
 
         currentLocation
@@ -77,9 +76,6 @@ public class EarthCompanion extends Companion {
 
     @Override
     public void advanceReaction() {
-        if (CompanionAbility.activeAbilities.containsKey(this))
-            return;
-
         LivingEntity randomEntity = getRandomEntity(getLocation(), 20);
 
         if (randomEntity == null)

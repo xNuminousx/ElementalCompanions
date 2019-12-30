@@ -1,6 +1,7 @@
-package me.numin.elementalcompanions.utils;
+package me.numin.elementalcompanions.utils.handlers;
 
 import com.projectkorra.projectkorra.GeneralMethods;
+import me.numin.elementalcompanions.utils.randomizers.TrueRandom;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Movement {
+public class MovementHandler {
 
     private Location currentLocation;
     private Location destination;
@@ -20,28 +21,24 @@ public class Movement {
 
     private double speed;
     private long newGoalTime;
-    private long stopTime;
     private long newGoalBuffer;
-    private long movementBuffer;
-    private long time;
 
     /**
-     * A class used to manipulate a Location variable in different ways.
+     * A class used to manipulate a {@link Location} variable in different ways.
      *
-     * @param anchor The player entity which the movement revolves around.
-     * @param spawn The initial spawn location used for first calculations.
+     * @param anchor The {@link Player} which the movement revolves around.
+     * @param spawn The initial {@link Location} used for first calculations.
      */
-    public Movement(Player anchor, Location spawn) {
+    public MovementHandler(Player anchor, Location spawn) {
         this.anchor = anchor;
+
         this.currentLocation = spawn.clone();
         this.destination = generateRandomPoint(anchor.getEyeLocation());
         this.direction = new Vector(1, 0, 0);
-        this.newGoalBuffer = 1500;
-        this.movementBuffer = 500;
+
+        this.newGoalTime = System.currentTimeMillis();
+        this.newGoalBuffer = 2500;
         this.speed = 0.1;
-        this.time = System.currentTimeMillis();
-        this.newGoalTime = time;
-        this.stopTime = time;
     }
 
     public Location moveAimlessly() {
@@ -51,9 +48,10 @@ public class Movement {
             currentLocation = anchor.getEyeLocation().clone();
         else if (anchorDistance > 4)
             speed = Math.max(0.1, anchorDistance * 0.05);
-        else speed = 0.1;
+        else
+            speed = Math.max(0.05, Math.random() > 0.9 ? anchorDistance * (Math.random() * 0.175) : 0.15);
 
-        if (System.currentTimeMillis() > newGoalTime + newGoalBuffer) {
+        if (System.currentTimeMillis() - newGoalTime > newGoalBuffer) {
             destination = generateRandomPoint(anchor.getEyeLocation());
             newGoalTime = System.currentTimeMillis();
         }
@@ -65,15 +63,6 @@ public class Movement {
             currentLocation.add(direction.clone().multiply(speed));
 
         return currentLocation;
-    }
-
-    public boolean shouldFreeze() {
-        if (System.currentTimeMillis() > time + 1000) {
-            if (System.currentTimeMillis() - time > 2000)
-                time = System.currentTimeMillis();
-            return new RandomChance(30).chanceReached();
-        }
-        return false;
     }
 
     public Location generateRandomPoint(Location base) {

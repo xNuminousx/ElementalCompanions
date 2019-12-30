@@ -1,4 +1,4 @@
-package me.numin.elementalcompanions.utils;
+package me.numin.elementalcompanions.utils.randomizers;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ public class RandomChance {
      * Used for allowing more randomization.
      * Using 1000 as a base rather than 100 allows for greater range.
      *
-     * @param percent The percent chance you want chanceReached to return true.
+     * @param percent The percent chance you want {@link #chanceReached()} to return true.
      */
     public RandomChance(double percent) {
         this.percent = percent * 10;

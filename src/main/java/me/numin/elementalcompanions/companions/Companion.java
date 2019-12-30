@@ -2,8 +2,8 @@ package me.numin.elementalcompanions.companions;
 
 import com.projectkorra.projectkorra.GeneralMethods;
 import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
-import me.numin.elementalcompanions.utils.Movement;
-import me.numin.elementalcompanions.utils.TrueRandom;
+import me.numin.elementalcompanions.utils.handlers.MovementHandler;
+import me.numin.elementalcompanions.utils.randomizers.TrueRandom;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -20,7 +20,7 @@ public abstract class Companion implements Companionable {
     public static HashMap<Player, Companion> companions = new HashMap<>();
 
     private Location spawn;
-    private Movement movement;
+    private MovementHandler movementHandler;
     private Player player;
 
     private boolean isReactive;
@@ -30,7 +30,7 @@ public abstract class Companion implements Companionable {
         this.player = player;
 
         this.spawn = locationRelativeToPlayer();
-        this.movement = new Movement(player, spawn);
+        this.movementHandler = new MovementHandler(player, spawn);
 
         this.isReactive = false;
         this.isSilenced = false;
@@ -46,8 +46,8 @@ public abstract class Companion implements Companionable {
         return companions;
     }
 
-    public Movement getMovement() {
-        return movement;
+    public MovementHandler getMovementHandler() {
+        return movementHandler;
     }
 
     public Player getPlayer() {

@@ -5,11 +5,9 @@ import me.numin.elementalcompanions.abilities.companion.CompanionAbilityManager;
 import me.numin.elementalcompanions.commands.CommandRegistry;
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.companions.CompanionManager;
-import me.numin.elementalcompanions.utils.LogType;
+import me.numin.elementalcompanions.utils.enumerations.LogType;
 
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 
 public class ElementalCompanions extends JavaPlugin {
 
@@ -38,14 +36,14 @@ public class ElementalCompanions extends JavaPlugin {
         else getLogger().warning(message);
     }
 
-    public void logException(LogType type, Companion companion) {
-        if (type == null || companion == null || companion.getPlayer() == null)
+    public void logException(LogType logType, Companion companion) {
+        if (logType == null || companion == null || companion.getPlayer() == null)
             return;
 
-        log(type, "Failed to execute a companion action.");
-        log(type, "Companion: " + companion.getName());
-        log(type, "Player: " + companion.getPlayer().getName());
-        log(type, "World: " + Objects.requireNonNull(companion.getLocation().getWorld()).getName());
+        log(logType, "Failed to execute a companion action.");
+        log(logType, "Companion: " + companion.getName());
+        log(logType, "Player: " + companion.getPlayer().getName());
+        log(logType, "World: " + companion.getLocation().getWorld().getName());
     }
 
     private void registerAbilities() {
