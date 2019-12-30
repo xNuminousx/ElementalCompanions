@@ -1,3 +1,4 @@
+[![GitHub Pre-Release](https://img.shields.io/github/release-pre/xNuminousx/ElementalCompanions.svg)](https://github.com/xNuminousx/ElementalCompanions/releases) [![Github All Releases](https://img.shields.io/github/downloads/xNuminousx/ElementalCompanions/total.svg)](https://github.com/xNuminousx/ElementalCompanions/releases)
 # ElementalCompanions - Beta Phases
 Companions to follow you, empower bending, and defend you! Use the command `/ec` to get started!
 
