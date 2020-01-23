@@ -1,7 +1,6 @@
 package me.numin.elementalcompanions.companions.water;
 
 import com.projectkorra.projectkorra.Element;
-import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.water.CompanionHeal;
 import me.numin.elementalcompanions.abilities.companion.water.CompanionWaterBlast;
 import me.numin.elementalcompanions.companions.Companion;

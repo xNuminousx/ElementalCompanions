@@ -1,7 +1,6 @@
 package me.numin.elementalcompanions.companions.fire;
 
 import com.projectkorra.projectkorra.Element;
-import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.fire.CompanionFireBlast;
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.randomizers.RandomChance;

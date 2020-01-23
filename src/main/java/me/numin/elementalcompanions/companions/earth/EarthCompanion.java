@@ -2,7 +2,6 @@ package me.numin.elementalcompanions.companions.earth;
 
 import com.projectkorra.projectkorra.Element;
 import com.projectkorra.projectkorra.ability.EarthAbility;
-import me.numin.elementalcompanions.abilities.companion.CompanionAbility;
 import me.numin.elementalcompanions.abilities.companion.earth.CompanionEarthPillar;
 import me.numin.elementalcompanions.companions.Companion;
 import me.numin.elementalcompanions.utils.enumerations.EarthMaterial;
